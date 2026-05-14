@@ -3,6 +3,7 @@ import sys
 
 from GameManager import verificar_tecla_pressionada
 from GameManager import verificar_iniciar_jogo
+from GameManager import verificar_cores_botoes
 from GameManager import verificar_sair_jogo
 
 pygame.init()
@@ -11,6 +12,7 @@ pygame.init()
 LARGURA = 1920
 ALTURA = 1080
 BRANCO = (255,255,255)
+CINZA = (128, 128, 128)
 PRETO = (0,0,0)
 
 tela = pygame.display.set_mode((LARGURA, ALTURA))
@@ -22,8 +24,8 @@ fonte_menu = pygame.font.Font('./fonts/NightsideDemoRegular.ttf', 100)
 fonte_geral = pygame.font.Font('./fonts/DevilCandle.otf', 50)
 
 texto_menu = fonte_menu.render("FAITH", True, BRANCO)
-botao_jogar = fonte_geral.render("Jogar", True, BRANCO)
-botao_sair = fonte_geral.render("Sair", True, BRANCO)
+
+botoes = [fonte_geral.render("Jogar", True, BRANCO), fonte_geral.render("Sair", True, BRANCO)]
 
 #IMAGENS
 menu_image = pygame.image.load("./images/house-exterior.png").convert()
@@ -47,11 +49,24 @@ while True:
 
     if no_menu:
         no_menu = verificar_iniciar_jogo(tecla_pressionada)
+
+        trocar_cor_botoes = verificar_cores_botoes(pygame.mouse.get_pos())
+        if trocar_cor_botoes is not None:
+            if trocar_cor_botoes[0] == 0 and trocar_cor_botoes[1]:
+                botoes[0] = fonte_geral.render("Jogar", True, CINZA)
+            elif trocar_cor_botoes[0] == 1 and trocar_cor_botoes[1]:
+                botoes[1] = fonte_geral.render("Sair", True, CINZA)
+        else:
+            botoes[0] = fonte_geral.render("Jogar", True, BRANCO)
+            botoes[1] = fonte_geral.render("Sair", True, BRANCO)
+
+
+
         tela.fill(PRETO)
         tela.blit(menu_image, (236,0))
         tela.blit(texto_menu, (860, 400))
-        tela.blit(botao_jogar, (880, 540))
-        tela.blit(botao_sair, (900, 600))
+        tela.blit(botoes[0], (880, 540))
+        tela.blit(botoes[1], (900, 600))
     else:
         no_menu = verificar_tecla_pressionada(tecla_pressionada, True)
         tela.blit(hall_entrada, (236, 0))

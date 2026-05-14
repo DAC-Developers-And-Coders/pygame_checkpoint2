@@ -24,3 +24,11 @@ def verificar_tecla_pressionada(tecla_pressionada, verificando_retorno_menu):
         return True
 
     return None
+
+def verificar_cores_botoes(mouse_pos):
+    if 882 < mouse_pos[0] < 1028 and 543 < mouse_pos[1] < 586:
+        return 0, True
+    elif 902 < mouse_pos[0] < 1007 and 603 < mouse_pos[1] < 647:
+        return 1, True
+    else:
+        return None
