@@ -3,8 +3,8 @@ import sys
 
 from GameManager import verificar_tecla_pressionada
 from GameManager import verificar_iniciar_jogo
-from GameManager import verificar_cores_botoes
 from GameManager import verificar_sair_jogo
+from GameManager import gerenciar_menu
 
 pygame.init()
 
@@ -49,24 +49,7 @@ while True:
 
     if no_menu:
         no_menu = verificar_iniciar_jogo(tecla_pressionada)
-
-        trocar_cor_botoes = verificar_cores_botoes(pygame.mouse.get_pos())
-        if trocar_cor_botoes is not None:
-            if trocar_cor_botoes[0] == 0 and trocar_cor_botoes[1]:
-                botoes[0] = fonte_geral.render("Jogar", True, CINZA)
-            elif trocar_cor_botoes[0] == 1 and trocar_cor_botoes[1]:
-                botoes[1] = fonte_geral.render("Sair", True, CINZA)
-        else:
-            botoes[0] = fonte_geral.render("Jogar", True, BRANCO)
-            botoes[1] = fonte_geral.render("Sair", True, BRANCO)
-
-
-
-        tela.fill(PRETO)
-        tela.blit(menu_image, (236,0))
-        tela.blit(texto_menu, (860, 400))
-        tela.blit(botoes[0], (880, 540))
-        tela.blit(botoes[1], (900, 600))
+        gerenciar_menu(botoes, fonte_geral, CINZA, BRANCO, PRETO, tela, menu_image, texto_menu)
     else:
         no_menu = verificar_tecla_pressionada(tecla_pressionada, True)
         tela.blit(hall_entrada, (236, 0))
