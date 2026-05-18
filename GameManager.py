@@ -47,7 +47,28 @@ def verificar_porao(evento):
             return True
     return False
 
-def verificar_tecla_pressionada(tecla_pressionada, verificando_retorno_menu):
+def verificar_quarto_pais(evento):
+    if evento is not None:
+        x, y = evento.pos
+        if 570 < x < 687 and 282 < y < 936:
+            return True
+    return False
+
+def verificar_sotao(evento):
+    if evento is not None:
+        x, y = evento.pos
+        if 821 < x < 1099 and 373 < y < 660:
+            return True
+    return False
+
+def verificar_quarto_filha(evento):
+    if evento is not None:
+        x, y = evento.pos
+        if 1249 < x < 1352 and 282 < y < 936:
+            return True
+    return False
+
+def verificar_tecla_pressionada(tecla_pressionada, verificando_retorno_menu = False):
     if tecla_pressionada[pygame.K_ESCAPE] and verificando_retorno_menu:
         return True
 
@@ -60,6 +81,26 @@ def verificar_cores_botoes(mouse_pos):
         return 1, True
     else:
         return None
+
+def verificar_retornar_a1(evento, quarto):
+    if evento is not None:
+        x, y = evento.pos
+        if quarto == 'L' or quarto == 'S' or quarto == 'A':
+            if 236 < x < 1684 and 986 < y < 1080:
+                return True
+        elif quarto == 'K':
+            if 947 < x < 1159 and 186 < y < 563:
+                return True
+        elif quarto == 'B':
+            if 1069 < x < 1294 and 295 < y < 535:
+                return True
+        elif quarto == 'P':
+            if 560 < x < 761 and 200 < y < 775:
+                return True
+        elif quarto == 'D':
+            if 1007 < x < 1294 and 129 < y < 773:
+                return True
+    return False
 
 def gerenciar_menu(botoes, fonte_geral, CINZA, BRANCO, PRETO, tela, menu_image, texto_menu):
     trocar_cor_botoes = verificar_cores_botoes(pygame.mouse.get_pos())
@@ -77,3 +118,6 @@ def gerenciar_menu(botoes, fonte_geral, CINZA, BRANCO, PRETO, tela, menu_image, 
     tela.blit(texto_menu, (860, 400))
     tela.blit(botoes[0], (880, 540))
     tela.blit(botoes[1], (900, 600))
+
+def gerenciar_tela(tela, imagem):
+    tela.blit(imagem, (236, 0))
