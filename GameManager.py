@@ -19,6 +19,34 @@ def verificar_sair_jogo(evento):
             pygame.quit()
             sys.exit()
 
+def verificar_segundo_andar(evento):
+    if evento is not None:
+        x, y = evento.pos
+        if 238 < x < 668 and 0 < y < 1015:
+            return True
+    return False
+
+def verificar_sala(evento):
+    if evento is not None:
+        x, y = evento.pos
+        if 675 < x < 992 and 234 < y < 847:
+            return True
+    return False
+
+def verificar_cozinha(evento):
+    if evento is not None:
+        x, y = evento.pos
+        if 1365 < x < 1441 and 226 < y < 856:
+            return True
+    return False
+
+def verificar_porao(evento):
+    if evento is not None:
+        x, y = evento.pos
+        if 1178 < x < 1300 and 313 < y < 777:
+            return True
+    return False
+
 def verificar_tecla_pressionada(tecla_pressionada, verificando_retorno_menu):
     if tecla_pressionada[pygame.K_ESCAPE] and verificando_retorno_menu:
         return True
