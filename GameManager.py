@@ -68,6 +68,13 @@ def verificar_quarto_filha(evento):
             return True
     return False
 
+def verificar_mesa_quarto_filha(evento):
+    if evento is not None:
+        x, y = evento.pos
+        if 1420 < x < 1500 and 560 < y < 631:
+            return True
+    return False
+
 def verificar_tecla_pressionada(tecla_pressionada, verificando_retorno_menu = False):
     if tecla_pressionada[pygame.K_ESCAPE] and verificando_retorno_menu:
         return True
