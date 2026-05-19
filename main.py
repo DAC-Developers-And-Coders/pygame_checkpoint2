@@ -69,7 +69,8 @@ garota_quarto_pais = pygame.image.load('./images/girl/girl_parents_bedroom.png')
 garota_quarto_filha = pygame.image.load('./images/girl/girl_bedroom.png').convert()
 garota_diario_original = pygame.image.load('./images/girl/girl_diary.png').convert()
 garota_diario = pygame.transform.scale(garota_diario_original, (450, 650))
-garota_foto = pygame.image.load('./images/girl/girl_photo.png').convert()
+garota_foto_original = pygame.image.load('./images/girl/girl_photo.png').convert()
+garota_foto = pygame.transform.scale(garota_foto_original, (450, 498))
 
 som_porta_geral = pygame.mixer.Sound('./sfx/opening_default_door.mp3')
 som_porta_menu = pygame.mixer.Sound('./sfx/opening_main_door.mp3')
@@ -90,9 +91,11 @@ no_quarto_pais = False
 no_quarto_filha = False
 no_segundo_andar = False
 no_primeiro_andar = False
+mostrar_foto_garota = False
 mostrar_diario_garota = False
 
 fechar_diario_garota = pygame.Rect(702,20,50,50)
+fechar_foto_garota = pygame.Rect(702,20,50,50)
 
 pode_clicar = True
 timer = None
@@ -127,6 +130,12 @@ while True:
             if evento.type == pygame.MOUSEBUTTONDOWN:
                 if fechar_diario_garota.collidepoint(evento.pos):
                     mostrar_diario_garota = False
+            continue
+
+        if mostrar_foto_garota:
+            if evento.type == pygame.MOUSEBUTTONDOWN:
+                if fechar_foto_garota.collidepoint(evento.pos):
+                    mostrar_foto_garota = False
             continue
 
         if evento.type == pygame.MOUSEBUTTONDOWN and pode_clicar:
@@ -213,6 +222,9 @@ while True:
 
                 if no_segundo_andar:
                     no_quarto_pais = False
+
+                if verificar_mesa_quarto_pais(evento):
+                    mostrar_foto_garota = True
             elif no_quarto_filha:
                 no_segundo_andar = verificar_retornar_a1(evento, 'D')
                 x, y = evento.pos
@@ -271,8 +283,9 @@ while True:
     if no_menu:
         no_menu = verificar_iniciar_jogo(tecla_pressionada)
 
-        (na_sala, no_primeiro_andar, no_segundo_andar, na_cozinha, no_porao, no_quarto_pais, no_sotao, no_quarto_filha, mostrar_diario_garota) = (
-            False, False, False, False, False, False, False, False, False)
+        (na_sala, no_primeiro_andar, no_segundo_andar, na_cozinha, no_porao, no_quarto_pais, no_sotao, no_quarto_filha,
+         mostrar_diario_garota, mostrar_foto_garota) = (
+            False, False, False, False, False, False, False, False, False, False)
 
         if not no_menu:
             mudar_musica_menu()
@@ -327,6 +340,11 @@ while True:
         gerenciar_tela(tela, garota_diario)
         texto_x = fonte_geral.render('X', True, (255, 255, 255))
         tela.blit(texto_x, (fechar_diario_garota.x + 12, fechar_diario_garota.y + 2))
+
+    if mostrar_foto_garota and no_quarto_pais:
+        gerenciar_tela(tela, garota_foto)
+        texto_x = fonte_geral.render('X', True, (255, 255, 255))
+        tela.blit(texto_x, (fechar_foto_garota.x + 12, fechar_foto_garota.y + 2))
 
     if garota_spawn:
         pode_clicar = False
