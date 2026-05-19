@@ -1,5 +1,5 @@
 from GameManager import *
-from combat import combate, checar_encontro
+from combat import *
 
 pygame.init()
 pygame.mixer.init()
@@ -37,7 +37,8 @@ clock = pygame.time.Clock()
 fonte_menu = pygame.font.Font('./fonts/NightsideDemoRegular.ttf', 100)
 fonte_geral = pygame.font.Font('./fonts/DevilCandle.otf', 50)
 
-texto_menu = fonte_menu.render("FAITH", True, BRANCO)
+texto_menu = fonte_menu.render("The Visit", True, BRANCO)
+texto_combate = fonte_geral.render("[E] Exorcizar", True, BRANCO)
 
 botoes = [fonte_geral.render("Jogar", True, BRANCO), fonte_geral.render("Sair", True, BRANCO)]
 
@@ -70,16 +71,11 @@ na_sala = False
 no_porao = False
 no_sotao = False
 na_cozinha = False
+garota_spawn = False
 no_quarto_pais = False
 no_quarto_filha = False
 no_segundo_andar = False
 no_primeiro_andar = False
-na_sala_garota = False
-no_porao_garota = False
-no_sotao_garota = False
-na_cozinha_garota = False
-no_quarto_pais_garota = False
-no_quarto_filha_garota = False
 mostrar_diario_garota = False
 
 fechar_diario_garota = pygame.Rect(702,20,50,50)
@@ -130,6 +126,7 @@ while True:
 
                 if na_sala:
                     som_porta_geral.play()
+                    garota_spawn = checar_encontro()
                 elif no_segundo_andar_verificacao:
                     som_escada.play()
                     timer = [pygame.time.get_ticks(), 'Escada']
@@ -146,6 +143,7 @@ while True:
 
                 if no_quarto_pais or no_quarto_filha:
                     som_porta_geral.play()
+                    garota_spawn = checar_encontro()
                 if no_sotao_verificacao:
                     som_passos.play()
                     timer = [pygame.time.get_ticks(), 'Sotao']
@@ -184,7 +182,6 @@ while True:
             elif no_quarto_filha:
                 no_segundo_andar = verificar_retornar_a1(evento, 'D')
                 x, y = evento.pos
-                print(x, y)
 
                 if no_segundo_andar:
                     no_quarto_filha = False
@@ -202,55 +199,94 @@ while True:
         elif timer[1] == 'Cozinha' and pygame.time.get_ticks() - timer[0] >= 2000:
             timer = None
             na_cozinha = True
+            garota_spawn = checar_encontro()
         elif timer[1] == 'Porao' and pygame.time.get_ticks() - timer[0] >= 2000:
             timer = None
             no_porao = True
+            garota_spawn = checar_encontro()
         elif timer[1] == 'Sotao' and pygame.time.get_ticks() - timer[0] >= 2000:
             timer = None
             no_sotao = True
+            garota_spawn = checar_encontro()
         pode_clicar = True
         pygame.event.clear(pygame.MOUSEBUTTONDOWN)
-
 
     tecla_pressionada = pygame.key.get_pressed()
 
     if no_menu:
         no_menu = verificar_iniciar_jogo(tecla_pressionada)
+
         (na_sala, no_primeiro_andar, no_segundo_andar, na_cozinha, no_porao, no_quarto_pais, no_sotao, no_quarto_filha, mostrar_diario_garota) = (
             False, False, False, False, False, False, False, False, False)
+
         if not no_menu:
             no_primeiro_andar = True
+
+        garota_spawn = False
         gerenciar_menu(botoes, fonte_geral, CINZA, BRANCO, PRETO, tela, menu_image, texto_menu)
     elif no_primeiro_andar:
         no_menu = verificar_tecla_pressionada(tecla_pressionada, True)
         gerenciar_tela(tela, hall_entrada)
+        garota_spawn = False
     elif na_sala:
         no_menu = verificar_tecla_pressionada(tecla_pressionada, True)
-        gerenciar_tela(tela, sala)
+        if garota_spawn:
+            gerenciar_tela(tela, garota_sala)
+        else:
+            gerenciar_tela(tela, sala)
     elif na_cozinha:
         no_menu = verificar_tecla_pressionada(tecla_pressionada, True)
-        gerenciar_tela(tela, cozinha)
+        if garota_spawn:
+            gerenciar_tela(tela, garota_cozinha)
+        else:
+            gerenciar_tela(tela, cozinha)
     elif no_porao:
         no_menu = verificar_tecla_pressionada(tecla_pressionada, True)
-        gerenciar_tela(tela, porao)
+        if garota_spawn:
+            gerenciar_tela(tela, garota_porao)
+        else:
+            gerenciar_tela(tela, porao)
     elif no_segundo_andar:
         no_menu = verificar_tecla_pressionada(tecla_pressionada, True)
         gerenciar_tela(tela, corredor_andar2)
+        garota_spawn = False
     elif no_quarto_pais:
         no_menu = verificar_tecla_pressionada(tecla_pressionada, True)
-        gerenciar_tela(tela, quarto_pais)
+        if garota_spawn:
+            gerenciar_tela(tela, garota_quarto_pais)
+        else:
+            gerenciar_tela(tela, quarto_pais)
     elif no_sotao:
         no_menu = verificar_tecla_pressionada(tecla_pressionada, True)
-        gerenciar_tela(tela, sotao)
+        if garota_spawn:
+            gerenciar_tela(tela, garota_sotao)
+        else:
+            gerenciar_tela(tela, sotao)
     elif no_quarto_filha:
         no_menu = verificar_tecla_pressionada(tecla_pressionada, True)
-        gerenciar_tela(tela, quarto_filha)
+
+        if garota_spawn:
+            gerenciar_tela(tela, garota_quarto_filha)
+        else:
+            gerenciar_tela(tela, quarto_filha)
+
         if mostrar_diario_garota:
             no_menu = verificar_tecla_pressionada(tecla_pressionada, True)
             gerenciar_tela(tela, garota_diario)
             texto_x = fonte_geral.render("X", True, (255, 255, 255))
             tela.blit(texto_x, (fechar_diario_garota.x + 12, fechar_diario_garota.y + 2))
 
+    if garota_spawn:
+        pode_clicar = False
+        ganhador = gerenciar_combate(tela, texto_combate, tecla_pressionada)
+        if ganhador is not None:
+            if ganhador == 'Jogador':
+                inimigo['hp'] -= 1
+            else:
+                jogador['hp'] -= 1
+
+            pode_clicar = True
+            garota_spawn = False
 
     pygame.display.flip()
     clock.tick(60)

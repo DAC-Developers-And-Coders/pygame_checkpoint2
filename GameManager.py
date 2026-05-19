@@ -122,9 +122,9 @@ def gerenciar_menu(botoes, fonte_geral, cinza, branco, preto, tela, menu_image, 
 
     tela.fill(preto)
     tela.blit(menu_image, (236, 0))
-    tela.blit(texto_menu, (860, 400))
+    tela.blit(texto_menu, (782, 400))
     tela.blit(botoes[0], (880, 540))
     tela.blit(botoes[1], (900, 600))
 
-def gerenciar_tela(tela, imagem):
-    tela.blit(imagem, (236, 0))
+def gerenciar_tela(tela, texto):
+    tela.blit(texto, (236, 0))
