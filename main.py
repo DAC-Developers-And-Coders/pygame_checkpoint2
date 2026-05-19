@@ -1,21 +1,4 @@
-import pygame
-import sys
-
-from GameManager import verificar_tecla_pressionada
-from GameManager import verificar_segundo_andar
-from GameManager import verificar_iniciar_jogo
-from GameManager import verificar_quarto_filha
-from GameManager import verificar_retornar_a1
-from GameManager import verificar_quarto_pais
-from GameManager import verificar_sair_jogo
-from GameManager import verificar_cozinha
-from GameManager import verificar_porao
-from GameManager import verificar_sotao
-from GameManager import gerenciar_menu
-from GameManager import verificar_sala
-from GameManager import gerenciar_tela
-from GameManager import verificar_sala
-from GameManager import verificar_mesa_quarto_filha
+from GameManager import *
 from combat import combate, checar_encontro
 
 
@@ -69,15 +52,15 @@ quarto_filha = pygame.image.load("./images/daughter-room.png").convert()
 hall_entrada = pygame.image.load("./images/entrance-hall.png").convert()
 quarto_pais = pygame.image.load("./images/parents-bedroom.png").convert()
 corredor_andar2 = pygame.image.load("./images/upstairs-hallway.png").convert()
-garota_sotao = pygame.image.load("./girl/girl_attic.png").convert()
-garota_porao = pygame.image.load("./girl/girl_basement.png").convert()
-garota_cozinha = pygame.image.load("./girl/girl_kitchen.png").convert()
-garota_sala = pygame.image.load("./girl/girl_living_room.png").convert()
-garota_quarto_pais = pygame.image.load("./girl/girl_parents_bedroom.png").convert()
-garota_quarto_filha = pygame.image.load("./girl/girl_bedroom.png").convert()
-garota_diario_original = pygame.image.load("./girl/girl_diary.png").convert()
+garota_sotao = pygame.image.load("./images/girl/girl_attic.png").convert()
+garota_porao = pygame.image.load("./images/girl/girl_basement.png").convert()
+garota_cozinha = pygame.image.load("./images/girl/girl_kitchen.png").convert()
+garota_sala = pygame.image.load("./images/girl/girl_living_room.png").convert()
+garota_quarto_pais = pygame.image.load("./images/girl/girl_parents_bedroom.png").convert()
+garota_quarto_filha = pygame.image.load("./images/girl/girl_bedroom.png").convert()
+garota_diario_original = pygame.image.load("./images/girl/girl_diary.png").convert()
 garota_diario = pygame.transform.scale(garota_diario_original, (450, 650))
-garota_foto = pygame.image.load("./girl/girl_photo.png").convert()
+garota_foto = pygame.image.load("./images/girl/girl_photo.png").convert()
 
 no_menu = True
 na_sala = False
