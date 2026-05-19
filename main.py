@@ -1,21 +1,7 @@
-import pygame
-import sys
-
-from GameManager import verificar_tecla_pressionada
-from GameManager import verificar_segundo_andar
-from GameManager import verificar_iniciar_jogo
-from GameManager import verificar_quarto_filha
-from GameManager import verificar_retornar_a1
-from GameManager import verificar_quarto_pais
-from GameManager import verificar_sair_jogo
-from GameManager import verificar_cozinha
-from GameManager import verificar_porao
-from GameManager import verificar_sotao
-from GameManager import gerenciar_menu
-from GameManager import verificar_sala
-from GameManager import gerenciar_tela
+from GameManager import *
 
 pygame.init()
+pygame.mixer.init()
 
 #CONFIG GERAL
 LARGURA = 1920
@@ -36,7 +22,6 @@ texto_menu = fonte_menu.render("FAITH", True, BRANCO)
 
 botoes = [fonte_geral.render("Jogar", True, BRANCO), fonte_geral.render("Sair", True, BRANCO)]
 
-#IMAGENS
 sotao = pygame.image.load("./images/attic.png").convert()
 porao = pygame.image.load("./images/basement.png").convert()
 cozinha = pygame.image.load("./images/kitchen.png").convert()
@@ -46,6 +31,11 @@ quarto_filha = pygame.image.load("./images/daughter-room.png").convert()
 hall_entrada = pygame.image.load("./images/entrance-hall.png").convert()
 quarto_pais = pygame.image.load("./images/parents-bedroom.png").convert()
 corredor_andar2 = pygame.image.load("./images/upstairs-hallway.png").convert()
+
+som_porta_menu = pygame.mixer.Sound("./sfx/opening_main_door.mp3")
+som_porta_geral = pygame.mixer.Sound("./sfx/opening_default_door.mp3")
+som_escada = pygame.mixer.Sound("./sfx/stairs_footsteps.mp3")
+som_passos = pygame.mixer.Sound("./sfx/footsteps.mp3")
 
 no_menu = True
 na_sala = False
@@ -57,38 +47,71 @@ no_quarto_filha = False
 no_segundo_andar = False
 no_primeiro_andar = False
 
+pode_clicar = True
+timer = None
+
 while True:
     for evento in pygame.event.get():
         if evento.type == pygame.QUIT:
             pygame.quit()
             sys.exit()
 
-        if evento.type == pygame.MOUSEBUTTONDOWN:
+        if evento.type == pygame.MOUSEBUTTONDOWN and pode_clicar:
             if no_menu:
                 no_menu = verificar_iniciar_jogo(None, evento)
 
                 if not no_menu:
-                    no_primeiro_andar = True
+                    som_porta_menu.play()
+                    timer = [pygame.time.get_ticks(), 'Inicio']
+                    pode_clicar = False
                 else:
                     verificar_sair_jogo(evento)
             elif (not no_menu and not na_sala and not na_cozinha and not no_porao and not no_segundo_andar and not no_sotao
                   and not no_quarto_pais and not no_quarto_filha and no_primeiro_andar):
-                no_segundo_andar = verificar_segundo_andar(evento)
+                no_segundo_andar_verificacao = verificar_segundo_andar(evento)
                 na_sala = verificar_sala(evento)
-                na_cozinha = verificar_cozinha(evento)
-                no_porao = verificar_porao(evento)
+                na_cozinha_verificacao = verificar_cozinha(evento)
+                no_porao_verificacao = verificar_porao(evento)
 
-                if no_segundo_andar or na_sala or na_cozinha or no_porao:
+                if no_segundo_andar_verificacao or na_sala or na_cozinha_verificacao or no_porao_verificacao:
                     no_primeiro_andar = False
+
+                if na_cozinha_verificacao:
+                    som_passos.play()
+                    timer = [pygame.time.get_ticks(), 'Cozinha']
+                    pode_clicar = False
+                elif no_porao_verificacao:
+                    som_passos.play()
+                    timer = [pygame.time.get_ticks(), 'Porao']
+                    pode_clicar = False
+
+                if na_sala:
+                    som_porta_geral.play()
+                elif no_segundo_andar_verificacao:
+                    som_escada.play()
+                    timer = [pygame.time.get_ticks(), 'Escada']
+                    pode_clicar = False
             elif (not no_menu and not na_sala and not na_cozinha and not no_porao and not no_primeiro_andar and not no_sotao
                   and not no_quarto_pais and not no_quarto_filha and no_segundo_andar):
-                no_sotao = verificar_sotao(evento)
+                no_sotao_verificacao = verificar_sotao(evento)
                 no_quarto_pais = verificar_quarto_pais(evento)
                 no_quarto_filha = verificar_quarto_filha(evento)
-                no_primeiro_andar = verificar_retornar_a1(evento, 'S')
+                no_primeiro_andar_verificacao = verificar_retornar_a1(evento, 'S')
 
-                if no_quarto_pais or no_sotao or no_quarto_filha or no_primeiro_andar:
+                if no_quarto_pais or no_sotao_verificacao or no_quarto_filha or no_primeiro_andar_verificacao:
                     no_segundo_andar = False
+
+                if no_quarto_pais or no_quarto_filha:
+                    som_porta_geral.play()
+                if no_sotao_verificacao:
+                    som_passos.play()
+                    timer = [pygame.time.get_ticks(), 'Sotao']
+                    pode_clicar = False
+                if no_primeiro_andar_verificacao:
+                    som_escada.play()
+                    timer = [pygame.time.get_ticks(), 'Inicio']
+                    pode_clicar = False
+
             elif na_sala:
                 no_primeiro_andar = verificar_retornar_a1(evento, 'L')
 
@@ -98,6 +121,7 @@ while True:
                 no_primeiro_andar = verificar_retornar_a1(evento, 'K')
 
                 if no_primeiro_andar:
+                    som_porta_geral.play()
                     na_cozinha = False
             elif no_porao:
                 no_primeiro_andar = verificar_retornar_a1(evento, 'B')
@@ -120,6 +144,24 @@ while True:
                 if no_segundo_andar:
                     no_quarto_filha = False
 
+    if timer is not None:
+        if timer[1] == 'Inicio' and pygame.time.get_ticks() - timer[0] >= 2000:
+            timer = None
+            no_primeiro_andar = True
+        elif timer[1] == 'Escada' and pygame.time.get_ticks() - timer[0] >= 2000:
+            timer = None
+            no_segundo_andar = True
+        elif timer[1] == 'Cozinha' and pygame.time.get_ticks() - timer[0] >= 2000:
+            timer = None
+            na_cozinha = True
+        elif timer[1] == 'Porao' and pygame.time.get_ticks() - timer[0] >= 2000:
+            timer = None
+            no_porao = True
+        elif timer[1] == 'Sotao' and pygame.time.get_ticks() - timer[0] >= 2000:
+            timer = None
+            no_sotao = True
+        pode_clicar = True
+        pygame.event.clear(pygame.MOUSEBUTTONDOWN)
 
 
     tecla_pressionada = pygame.key.get_pressed()
