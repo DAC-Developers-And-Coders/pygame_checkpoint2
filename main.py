@@ -1,33 +1,26 @@
 from GameManager import *
 from combat import *
 
-pygame.init()
-pygame.mixer.init()
-
-jogador = {
-    'nome': 'John',
-    'hp': 3
-}
-
-inimigo = {
-    'nome': 'Mary',
-    'hp': 4
-}
-
-em_combate = False
-inimigo_aparece = False
-em_evento = False
-sala_evento = None
-ultima_rolagem = None
-
-if inimigo_aparece:
-    em_combate = True
-
 LARGURA = 1920
 ALTURA = 1080
 BRANCO = (255,255,255)
 CINZA = (128, 128, 128)
 PRETO = (0,0,0)
+
+pygame.init()
+pygame.mixer.init()
+
+jogador = {
+    'nome': 'John',
+    'full_hp' : 3,
+    'hp': 3
+}
+
+inimigo = {
+    'nome': 'Mary',
+    'full_hp' : 4,
+    'hp': 4
+}
 
 tela = pygame.display.set_mode((LARGURA, ALTURA))
 
@@ -36,6 +29,8 @@ pygame.display.set_caption('CP2')
 clock = pygame.time.Clock()
 fonte_menu = pygame.font.Font('./fonts/NightsideDemoRegular.ttf', 100)
 fonte_geral = pygame.font.Font('./fonts/DevilCandle.otf', 50)
+fonte_pequena = pygame.font.Font('./fonts/DevilCandle.otf', 30)
+fonte_numeros = pygame.font.SysFont('arial', 30)
 
 texto_menu = fonte_menu.render('The Visit', True, BRANCO)
 texto_combate = fonte_geral.render('[E] Exorcizar', True, BRANCO)
@@ -99,6 +94,7 @@ fechar_foto_garota = pygame.Rect(702,20,50,50)
 
 pode_clicar = True
 timer = None
+timer_batalha = None
 
 try:
     pygame.mixer.music.load('./sfx/menu_music.mp3')
@@ -354,12 +350,22 @@ while True:
             if ganhador == 'Jogador':
                 inimigo['hp'] -= 1
                 som_acerto.play()
+                timer_batalha = [pygame.time.get_ticks(), 'Sucesso']
             else:
                 jogador['hp'] -= 1
                 som_risada.play()
+                timer_batalha = [pygame.time.get_ticks(), 'Falha']
 
             pode_clicar = True
             garota_spawn = False
+
+    if timer_batalha is not None:
+        if timer_batalha[1] == 'Sucesso' and pygame.time.get_ticks() - timer_batalha[0] <= 5000:
+            tela.blit(fonte_pequena.render(f'Sucesso! Mary:', True, BRANCO), (236, 900))
+            tela.blit(fonte_numeros.render(f'{inimigo["hp"]} / {inimigo["full_hp"]}', True, BRANCO), (236, 930))
+        elif timer_batalha[1] == 'Falha' and pygame.time.get_ticks() - timer_batalha[0] <= 5000:
+            tela.blit(fonte_pequena.render(f'Falha. Você:', True, BRANCO), (236, 900))
+            tela.blit(fonte_numeros.render(f'{jogador["hp"]} / {jogador["full_hp"]}', True, BRANCO), (236, 930))
 
     if no_fim:
         tela.fill(PRETO)
