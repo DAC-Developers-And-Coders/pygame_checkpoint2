@@ -11,7 +11,7 @@ jogador = {
 
 inimigo = {
     'nome': 'Mary',
-    'hp': 3
+    'hp': 4
 }
 
 em_combate = False
@@ -31,41 +31,55 @@ PRETO = (0,0,0)
 
 tela = pygame.display.set_mode((LARGURA, ALTURA))
 
-pygame.display.set_caption("CP2")
+pygame.display.set_caption('CP2')
 
 clock = pygame.time.Clock()
 fonte_menu = pygame.font.Font('./fonts/NightsideDemoRegular.ttf', 100)
 fonte_geral = pygame.font.Font('./fonts/DevilCandle.otf', 50)
 
-texto_menu = fonte_menu.render("The Visit", True, BRANCO)
-texto_combate = fonte_geral.render("[E] Exorcizar", True, BRANCO)
+texto_menu = fonte_menu.render('The Visit', True, BRANCO)
+texto_combate = fonte_geral.render('[E] Exorcizar', True, BRANCO)
 
-botoes = [fonte_geral.render("Jogar", True, BRANCO), fonte_geral.render("Sair", True, BRANCO)]
+textos_ruins = [fonte_geral.render('Você não consegue cumprir sua', True, BRANCO),
+                    fonte_geral.render('missão de exorcizar Mary...', True, BRANCO),
+                    fonte_geral.render('A alma dela nunca encontrará descanso', True, BRANCO),
+                    fonte_geral.render('e você é o culpado.', True, BRANCO)]
 
-sotao = pygame.image.load("./images/attic.png").convert()
-porao = pygame.image.load("./images/basement.png").convert()
-cozinha = pygame.image.load("./images/kitchen.png").convert()
-sala = pygame.image.load("./images/living-room.png").convert()
-menu_image = pygame.image.load("./images/house-exterior.png").convert()
-quarto_filha = pygame.image.load("./images/daughter-room.png").convert()
-hall_entrada = pygame.image.load("./images/entrance-hall.png").convert()
-quarto_pais = pygame.image.load("./images/parents-bedroom.png").convert()
-corredor_andar2 = pygame.image.load("./images/upstairs-hallway.png").convert()
-garota_sotao = pygame.image.load("./images/girl/girl_attic.png").convert()
-garota_porao = pygame.image.load("./images/girl/girl_basement.png").convert()
-garota_cozinha = pygame.image.load("./images/girl/girl_kitchen.png").convert()
-garota_sala = pygame.image.load("./images/girl/girl_living_room.png").convert()
-garota_quarto_pais = pygame.image.load("./images/girl/girl_parents_bedroom.png").convert()
-garota_quarto_filha = pygame.image.load("./images/girl/girl_bedroom.png").convert()
-garota_diario_original = pygame.image.load("./images/girl/girl_diary.png").convert()
+textos_bons = [fonte_geral.render('Você cumpre sua missão de', True, BRANCO),
+                fonte_geral.render('salvar a alma de Mary...', True, BRANCO),
+                fonte_geral.render('Agora ela poderá começar uma nova vida', True, BRANCO),
+                fonte_geral.render('e encontrar o descanso eterno.', True, BRANCO)]
+
+botoes = [fonte_geral.render('Jogar', True, BRANCO), fonte_geral.render('Sair', True, BRANCO)]
+
+sotao = pygame.image.load('./images/attic.png').convert()
+porao = pygame.image.load('./images/basement.png').convert()
+cozinha = pygame.image.load('./images/kitchen.png').convert()
+sala = pygame.image.load('./images/living-room.png').convert()
+menu_image = pygame.image.load('./images/house-exterior.png').convert()
+quarto_filha = pygame.image.load('./images/daughter-room.png').convert()
+hall_entrada = pygame.image.load('./images/entrance-hall.png').convert()
+quarto_pais = pygame.image.load('./images/parents-bedroom.png').convert()
+corredor_andar2 = pygame.image.load('./images/upstairs-hallway.png').convert()
+garota_sotao = pygame.image.load('./images/girl/girl_attic.png').convert()
+garota_porao = pygame.image.load('./images/girl/girl_basement.png').convert()
+garota_cozinha = pygame.image.load('./images/girl/girl_kitchen.png').convert()
+garota_sala = pygame.image.load('./images/girl/girl_living_room.png').convert()
+garota_quarto_pais = pygame.image.load('./images/girl/girl_parents_bedroom.png').convert()
+garota_quarto_filha = pygame.image.load('./images/girl/girl_bedroom.png').convert()
+garota_diario_original = pygame.image.load('./images/girl/girl_diary.png').convert()
 garota_diario = pygame.transform.scale(garota_diario_original, (450, 650))
-garota_foto = pygame.image.load("./images/girl/girl_photo.png").convert()
+garota_foto = pygame.image.load('./images/girl/girl_photo.png').convert()
 
-som_porta_menu = pygame.mixer.Sound("./sfx/opening_main_door.mp3")
-som_porta_geral = pygame.mixer.Sound("./sfx/opening_default_door.mp3")
-som_escada = pygame.mixer.Sound("./sfx/stairs_footsteps.mp3")
-som_passos = pygame.mixer.Sound("./sfx/footsteps.mp3")
+som_porta_geral = pygame.mixer.Sound('./sfx/opening_default_door.mp3')
+som_porta_menu = pygame.mixer.Sound('./sfx/opening_main_door.mp3')
+som_escada = pygame.mixer.Sound('./sfx/stairs_footsteps.mp3')
+som_acerto = pygame.mixer.Sound('./sfx/girl_hurt_sound.mp3')
+som_passos = pygame.mixer.Sound('./sfx/footsteps.mp3')
+som_risada = pygame.mixer.Sound('./sfx/girl_laught.mp3')
+som_ambiente = './sfx/ambiance.mp3'
 
+no_fim = False
 no_menu = True
 na_sala = False
 no_porao = False
@@ -83,9 +97,29 @@ fechar_diario_garota = pygame.Rect(702,20,50,50)
 pode_clicar = True
 timer = None
 
+try:
+    pygame.mixer.music.load('./sfx/menu_music.mp3')
+    pygame.mixer.music.set_volume(0.5)
+    pygame.mixer.music.play(loops=-1)
+except pygame.error as e:
+    print(f'Erro ao carregar musica {e}')
+
+def mudar_musica_menu():
+    pygame.mixer.music.stop()
+
+    if not no_menu:
+        pygame.mixer.music.load(som_ambiente)
+    else:
+        pygame.mixer.music.load('./sfx/menu_music.mp3')
+
+    pygame.mixer.music.set_volume(0.5)
+    pygame.mixer.music.play(loops=-1)
+    som_porta_menu.play()
+
 while True:
     for evento in pygame.event.get():
         if evento.type == pygame.QUIT:
+            pygame.mixer.music.stop()
             pygame.quit()
             sys.exit()
 
@@ -100,7 +134,7 @@ while True:
                 no_menu = verificar_iniciar_jogo(None, evento)
 
                 if not no_menu:
-                    som_porta_menu.play()
+                    mudar_musica_menu()
                     timer = [pygame.time.get_ticks(), 'Inicio']
                     pode_clicar = False
                 else:
@@ -208,6 +242,27 @@ while True:
             timer = None
             no_sotao = True
             garota_spawn = checar_encontro()
+        elif timer[1] == 'Fim' and pygame.time.get_ticks() - timer[0] >= 10000:
+            timer = None
+
+            no_fim = False
+            no_menu = True
+
+            jogador['hp'] = 3
+            inimigo['hp'] = 4
+
+            garota_spawn = False
+
+            na_sala = False
+            na_cozinha = False
+            no_porao = False
+            no_sotao = False
+            no_quarto_pais = False
+            no_quarto_filha = False
+            no_segundo_andar = False
+            no_primeiro_andar = False
+
+            mudar_musica_menu()
         pode_clicar = True
         pygame.event.clear(pygame.MOUSEBUTTONDOWN)
 
@@ -220,73 +275,95 @@ while True:
             False, False, False, False, False, False, False, False, False)
 
         if not no_menu:
+            mudar_musica_menu()
             no_primeiro_andar = True
 
         garota_spawn = False
         gerenciar_menu(botoes, fonte_geral, CINZA, BRANCO, PRETO, tela, menu_image, texto_menu)
     elif no_primeiro_andar:
-        no_menu = verificar_tecla_pressionada(tecla_pressionada, True)
         gerenciar_tela(tela, hall_entrada)
         garota_spawn = False
     elif na_sala:
-        no_menu = verificar_tecla_pressionada(tecla_pressionada, True)
         if garota_spawn:
-            gerenciar_tela(tela, garota_sala)
+            gerenciar_tela(tela, garota_sala, True)
         else:
-            gerenciar_tela(tela, sala)
+            gerenciar_tela(tela, sala, True)
     elif na_cozinha:
-        no_menu = verificar_tecla_pressionada(tecla_pressionada, True)
         if garota_spawn:
             gerenciar_tela(tela, garota_cozinha)
         else:
             gerenciar_tela(tela, cozinha)
     elif no_porao:
-        no_menu = verificar_tecla_pressionada(tecla_pressionada, True)
         if garota_spawn:
             gerenciar_tela(tela, garota_porao)
         else:
             gerenciar_tela(tela, porao)
     elif no_segundo_andar:
-        no_menu = verificar_tecla_pressionada(tecla_pressionada, True)
         gerenciar_tela(tela, corredor_andar2)
         garota_spawn = False
     elif no_quarto_pais:
-        no_menu = verificar_tecla_pressionada(tecla_pressionada, True)
         if garota_spawn:
             gerenciar_tela(tela, garota_quarto_pais)
         else:
             gerenciar_tela(tela, quarto_pais)
     elif no_sotao:
-        no_menu = verificar_tecla_pressionada(tecla_pressionada, True)
         if garota_spawn:
             gerenciar_tela(tela, garota_sotao)
         else:
             gerenciar_tela(tela, sotao)
     elif no_quarto_filha:
-        no_menu = verificar_tecla_pressionada(tecla_pressionada, True)
-
         if garota_spawn:
             gerenciar_tela(tela, garota_quarto_filha)
         else:
             gerenciar_tela(tela, quarto_filha)
 
-        if mostrar_diario_garota:
-            no_menu = verificar_tecla_pressionada(tecla_pressionada, True)
-            gerenciar_tela(tela, garota_diario)
-            texto_x = fonte_geral.render("X", True, (255, 255, 255))
-            tela.blit(texto_x, (fechar_diario_garota.x + 12, fechar_diario_garota.y + 2))
+    if not no_menu and not garota_spawn and not no_fim:
+        no_menu = verificar_tecla_pressionada(tecla_pressionada, True)
+
+        if no_menu:
+            mudar_musica_menu()
+
+    if mostrar_diario_garota and no_quarto_filha:
+        gerenciar_tela(tela, garota_diario)
+        texto_x = fonte_geral.render('X', True, (255, 255, 255))
+        tela.blit(texto_x, (fechar_diario_garota.x + 12, fechar_diario_garota.y + 2))
 
     if garota_spawn:
         pode_clicar = False
         ganhador = gerenciar_combate(tela, texto_combate, tecla_pressionada)
+
         if ganhador is not None:
             if ganhador == 'Jogador':
                 inimigo['hp'] -= 1
+                som_acerto.play()
             else:
                 jogador['hp'] -= 1
+                som_risada.play()
 
             pode_clicar = True
             garota_spawn = False
+
+    if no_fim:
+        tela.fill(PRETO)
+        altura = 100
+
+        if jogador['hp'] <= 0:
+            for texto in textos_ruins:
+                tela.blit(texto, (236, altura))
+                altura += 100
+        elif inimigo['hp'] <= 0:
+            for texto in textos_bons:
+                tela.blit(texto, (236, altura))
+                altura += 100
+
+    if jogador['hp'] <= 0 and not no_fim:
+        timer = [pygame.time.get_ticks(), 'Fim']
+        pode_clicar = False
+        no_fim = True
+    elif inimigo['hp'] <= 0 and not no_fim:
+        timer = [pygame.time.get_ticks(), 'Fim']
+        pode_clicar = False
+        no_fim = True
 
     pygame.display.flip()
     clock.tick(60)
