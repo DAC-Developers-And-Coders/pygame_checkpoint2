@@ -1,6 +1,9 @@
 import pygame
 import sys
 
+import assets as ast
+import constants as const
+
 def verificar_iniciar_jogo(tecla_pressionada = None, evento = None):
     if evento is not None:
         x, y = evento.pos
@@ -138,45 +141,45 @@ def verificar_cores_botoes(mouse_pos):
     else:
         return None
 
-def verificar_retornar_a1(evento, quarto):
+def verificar_retornar(evento, quarto):
     if evento is not None:
         x, y = evento.pos
-        if quarto == 'L' or quarto == 'S' or quarto == 'A':
+        if quarto == 'Sala' or quarto == 'SegundoAndar' or quarto == 'Sotao':
             if 236 < x < 1684 and 986 < y < 1080:
                 return True
-        elif quarto == 'K':
+        elif quarto == 'Cozinha':
             if 947 < x < 1159 and 186 < y < 563:
                 return True
-        elif quarto == 'B':
+        elif quarto == 'Porao':
             if 1069 < x < 1294 and 295 < y < 535:
                 return True
-        elif quarto == 'P':
+        elif quarto == 'QuartoPais':
             if 560 < x < 761 and 200 < y < 775:
                 return True
-        elif quarto == 'D':
+        elif quarto == 'QuartoFilha':
             if 1007 < x < 1294 and 129 < y < 773:
                 return True
     return False
 
-def gerenciar_menu(botoes, fonte_geral, cinza, branco, preto, tela, menu_image, texto_menu):
+def gerenciar_menu(tela, menu_image):
     trocar_cor_botoes = verificar_cores_botoes(pygame.mouse.get_pos())
     if trocar_cor_botoes is not None:
         if trocar_cor_botoes[0] == 0 and trocar_cor_botoes[1]:
-            botoes[0] = fonte_geral.render('Jogar', True, cinza)
+            ast.botoes[0] = ast.fonte_geral.render('Jogar', True, const.CINZA)
         elif trocar_cor_botoes[0] == 1 and trocar_cor_botoes[1]:
-            botoes[1] = fonte_geral.render('Sair', True, cinza)
+            ast.botoes[1] = ast.fonte_geral.render('Sair', True, const.CINZA)
     else:
-        botoes[0] = fonte_geral.render('Jogar', True, branco)
-        botoes[1] = fonte_geral.render('Sair', True, branco)
+        ast.botoes[0] = ast.fonte_geral.render('Jogar', True, const.BRANCO)
+        ast.botoes[1] = ast.fonte_geral.render('Sair', True, const.BRANCO)
 
-    tela.fill(preto)
+    tela.fill(const.PRETO)
     tela.blit(menu_image, (236, 0))
-    tela.blit(texto_menu, (782, 400))
-    tela.blit(botoes[0], (880, 540))
-    tela.blit(botoes[1], (900, 600))
+    tela.blit(ast.texto_menu, (782, 400))
+    tela.blit(ast.botoes[0], (880, 540))
+    tela.blit(ast.botoes[1], (900, 600))
 
-def gerenciar_tela(tela, imagem, na_sala = None):
-    if na_sala is None:
+def gerenciar_tela(tela, imagem, lugar = None):
+    if lugar != 'Sala':
         tela.blit(imagem, (236, 0))
     else:
         tela.fill((0, 0, 0))

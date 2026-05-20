@@ -1,7 +1,5 @@
 import random
-
 import pygame
-
 
 def rodar_dado():
     return random.randint(1, 20)
@@ -26,7 +24,7 @@ def gerenciar_combate(tela, texto, tecla):
     if tecla is not None and tecla[pygame.K_e]:
         r_jogador, r_inimigo = resultados_combate()
 
-        if r_jogador > r_inimigo + 1:
+        if r_jogador >= r_inimigo:
             return 'Jogador'
         else:
             return 'Inimigo'
