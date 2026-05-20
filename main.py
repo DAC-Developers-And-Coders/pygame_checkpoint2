@@ -7,13 +7,13 @@ pygame.mixer.init()
 tela = pygame.display.set_mode((1920, 1080))
 pygame.display.set_caption('The Visit')
 
-import GameManager as gm
-import game_state as gs
-import combat as cm
+import scripts.GameManager as gm
+import scripts.game_state as gs
+import scripts.combat as cm
 
-from map import lugar_atual, overlay_ativo, lugares
-from constants import *
-from assets import *
+from scripts.map import lugar_atual, overlay_ativo, lugares
+from scripts.constants import *
+from scripts.assets import *
 
 clock = pygame.time.Clock()
 

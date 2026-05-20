@@ -1,8 +1,8 @@
 import pygame
 import sys
 
-import assets as ast
-import constants as const
+import scripts.assets as ast
+import scripts.constants as const
 
 def verificar_iniciar_jogo(tecla_pressionada = None, evento = None):
     if evento is not None:

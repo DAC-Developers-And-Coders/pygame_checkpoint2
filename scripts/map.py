@@ -1,5 +1,5 @@
-from assets import imagens
-import game_state as gs
+from scripts.assets import imagens
+import scripts.game_state as gs
 
 lugar_atual = 'Menu'
 overlay_ativo = None

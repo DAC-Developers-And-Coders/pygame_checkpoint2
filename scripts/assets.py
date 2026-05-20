@@ -1,5 +1,5 @@
 import pygame
-import constants as const
+import scripts.constants as const
 
 imagens = {
     'sotao' : pygame.image.load('./images/attic.png').convert(),
