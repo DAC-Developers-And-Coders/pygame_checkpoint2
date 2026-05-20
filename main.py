@@ -66,6 +66,18 @@ garota_diario_original = pygame.image.load('./images/girl/girl_diary.png').conve
 garota_diario = pygame.transform.scale(garota_diario_original, (450, 650))
 garota_foto_original = pygame.image.load('./images/girl/girl_photo.png').convert()
 garota_foto = pygame.transform.scale(garota_foto_original, (450, 498))
+familia_foto_original = pygame.image.load('./images/girl/family_photo.png').convert()
+familia_foto = pygame.transform.scale(familia_foto_original, (450, 498))
+foto_mary_julia_original = pygame.image.load('./images/girl/mary_and_julia.png').convert()
+foto_mary_julia = pygame.transform.scale(foto_mary_julia_original, (450, 498))
+cruz_mary_original = pygame.image.load('./images/girl/mary_cross.png').convert()
+cruz_mary = pygame.transform.scale(cruz_mary_original, (450, 498))
+cruz_rosalia_original = pygame.image.load('./images/girl/rosalia_cross.png').convert()
+cruz_rosalia = pygame.transform.scale(cruz_rosalia_original, (450, 498))
+cruz_william_original = pygame.image.load('./images/girl/william_cross.png').convert()
+cruz_william = pygame.transform.scale(cruz_william_original, (450, 498))
+documento_padre_original = pygame.image.load('./images/girl/priest_document.png').convert()
+documento_padre = pygame.transform.scale(documento_padre_original, (450, 650))
 
 som_porta_geral = pygame.mixer.Sound('./sfx/opening_default_door.mp3')
 som_porta_menu = pygame.mixer.Sound('./sfx/opening_main_door.mp3')
@@ -88,9 +100,21 @@ no_segundo_andar = False
 no_primeiro_andar = False
 mostrar_foto_garota = False
 mostrar_diario_garota = False
+mostrar_foto_familia = False
+mostrar_foto_mary_julia = False
+mostrar_cruz_mary = False
+mostrar_cruz_rosalia = False
+mostrar_cruz_william = False
+mostrar_documento_padre = False
 
 fechar_diario_garota = pygame.Rect(702,20,50,50)
 fechar_foto_garota = pygame.Rect(702,20,50,50)
+fechar_foto_familia = pygame.Rect(702,20,50,50)
+fechar_foto_mary_julia = pygame.Rect(702,20,50,50)
+fechar_cruz_mary = pygame.Rect(702,20,50,50)
+fechar_cruz_rosalia = pygame.Rect(702,20,50,50)
+fechar_cruz_william = pygame.Rect(702,20,50,50)
+fechar_documento_padre = pygame.Rect(702,20,50,50)
 
 pode_clicar = True
 timer = None
@@ -132,6 +156,42 @@ while True:
             if evento.type == pygame.MOUSEBUTTONDOWN:
                 if fechar_foto_garota.collidepoint(evento.pos):
                     mostrar_foto_garota = False
+            continue
+
+        if mostrar_foto_familia:
+            if evento.type == pygame.MOUSEBUTTONDOWN:
+                if fechar_foto_familia.collidepoint(evento.pos):
+                    mostrar_foto_familia = False
+            continue
+
+        if mostrar_foto_mary_julia:
+            if evento.type == pygame.MOUSEBUTTONDOWN:
+                if fechar_foto_mary_julia.collidepoint(evento.pos):
+                    mostrar_foto_mary_julia = False
+            continue
+
+        if mostrar_cruz_mary:
+            if evento.type == pygame.MOUSEBUTTONDOWN:
+                if fechar_cruz_mary.collidepoint(evento.pos):
+                    mostrar_cruz_mary = False
+            continue
+
+        if mostrar_cruz_rosalia:
+            if evento.type == pygame.MOUSEBUTTONDOWN:
+                if fechar_cruz_rosalia.collidepoint(evento.pos):
+                    mostrar_cruz_rosalia = False
+            continue
+
+        if mostrar_cruz_william:
+            if evento.type == pygame.MOUSEBUTTONDOWN:
+                if fechar_cruz_william.collidepoint(evento.pos):
+                    mostrar_cruz_william = False
+            continue
+
+        if mostrar_documento_padre:
+            if evento.type == pygame.MOUSEBUTTONDOWN:
+                if fechar_documento_padre.collidepoint(evento.pos):
+                    mostrar_documento_padre = False
             continue
 
         if evento.type == pygame.MOUSEBUTTONDOWN and pode_clicar:
@@ -195,6 +255,10 @@ while True:
             elif na_sala:
                 no_primeiro_andar = verificar_retornar_a1(evento, 'L')
 
+                if verificar_parede_sala(evento):
+                    mostrar_foto_familia = True
+
+
                 if no_primeiro_andar:
                     na_sala = False
             elif na_cozinha:
@@ -206,10 +270,21 @@ while True:
             elif no_porao:
                 no_primeiro_andar = verificar_retornar_a1(evento, 'B')
 
+                if verificar_armario_porao(evento):
+                    mostrar_documento_padre = True
+
                 if no_primeiro_andar:
                     no_porao = False
             elif no_sotao:
                 no_segundo_andar = verificar_retornar_a1(evento, 'A')
+                if verificar_cruz_esquerda(evento):
+                    mostrar_cruz_mary = True
+
+                if verificar_cruz_meio(evento):
+                    mostrar_cruz_rosalia = True
+
+                if verificar_cruz_direita(evento):
+                    mostrar_cruz_william = True
 
                 if no_segundo_andar:
                     no_sotao = False
@@ -221,15 +296,19 @@ while True:
 
                 if verificar_mesa_quarto_pais(evento):
                     mostrar_foto_garota = True
+
             elif no_quarto_filha:
                 no_segundo_andar = verificar_retornar_a1(evento, 'D')
-                x, y = evento.pos
 
                 if no_segundo_andar:
                     no_quarto_filha = False
 
                 if verificar_mesa_quarto_filha(evento):
                     mostrar_diario_garota = True
+
+                if verificar_quarto_filha_foto(evento):
+                    mostrar_foto_mary_julia = True
+
 
     if timer is not None:
         if timer[1] == 'Inicio' and pygame.time.get_ticks() - timer[0] >= 2000:
@@ -280,8 +359,8 @@ while True:
         no_menu = verificar_iniciar_jogo(tecla_pressionada)
 
         (na_sala, no_primeiro_andar, no_segundo_andar, na_cozinha, no_porao, no_quarto_pais, no_sotao, no_quarto_filha,
-         mostrar_diario_garota, mostrar_foto_garota) = (
-            False, False, False, False, False, False, False, False, False, False)
+         mostrar_diario_garota, mostrar_foto_garota, mostrar_foto_familia, mostrar_cruz_mary, mostrar_cruz_rosalia, mostrar_cruz_william, mostrar_documento_padre) = (
+            False, False, False, False, False, False, False, False, False, False, False, False, False, False, False)
 
         if not no_menu:
             mudar_musica_menu()
@@ -337,10 +416,40 @@ while True:
         texto_x = fonte_geral.render('X', True, (255, 255, 255))
         tela.blit(texto_x, (fechar_diario_garota.x + 12, fechar_diario_garota.y + 2))
 
+    if mostrar_foto_mary_julia and no_quarto_filha:
+        gerenciar_tela(tela, foto_mary_julia)
+        texto_x = fonte_geral.render('X', True, (255, 255, 255))
+        tela.blit(texto_x, (fechar_foto_mary_julia.x + 12, fechar_foto_mary_julia.y + 2))
+
     if mostrar_foto_garota and no_quarto_pais:
         gerenciar_tela(tela, garota_foto)
         texto_x = fonte_geral.render('X', True, (255, 255, 255))
         tela.blit(texto_x, (fechar_foto_garota.x + 12, fechar_foto_garota.y + 2))
+
+    if mostrar_foto_familia and na_sala:
+        gerenciar_tela(tela, familia_foto)
+        texto_x = fonte_geral.render('X', True, (255, 255, 255))
+        tela.blit(texto_x, (fechar_foto_familia.x + 12, fechar_foto_familia.y + 2))
+
+    if mostrar_cruz_mary and no_sotao:
+        gerenciar_tela(tela,cruz_mary)
+        texto_x = fonte_geral.render('X', True, (255, 255, 255))
+        tela.blit(texto_x, (fechar_cruz_mary.x + 12, fechar_cruz_mary.y + 2))
+
+    if mostrar_cruz_rosalia and no_sotao:
+        gerenciar_tela(tela, cruz_rosalia)
+        texto_x = fonte_geral.render('X', True, (255, 255, 255))
+        tela.blit(texto_x, (fechar_cruz_rosalia.x + 12, fechar_cruz_rosalia.y + 2))
+
+    if mostrar_cruz_william and no_sotao:
+        gerenciar_tela(tela, cruz_william)
+        texto_x = fonte_geral.render('X', True, (255, 255, 255))
+        tela.blit(texto_x, (fechar_cruz_william.x + 12, fechar_cruz_william.y + 2))
+
+    if mostrar_documento_padre and no_porao:
+        gerenciar_tela(tela, documento_padre)
+        texto_x = fonte_geral.render('X', True, (255, 255, 255))
+        tela.blit(texto_x, (fechar_documento_padre.x + 12, fechar_documento_padre.y + 2))
 
     if garota_spawn:
         pode_clicar = False

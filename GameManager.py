@@ -68,6 +68,13 @@ def verificar_quarto_filha(evento):
             return True
     return False
 
+def verificar_quarto_filha_foto(evento):
+    if evento is not None:
+        x, y = evento.pos
+        if 450 < x < 510 and 360 < y < 410:
+            return True
+    return False
+
 def verificar_mesa_quarto_filha(evento):
     if evento is not None:
         x, y = evento.pos
@@ -79,6 +86,41 @@ def verificar_mesa_quarto_pais(evento):
     if evento is not None:
         x, y = evento.pos
         if 1070 < x < 1196 and 525 < y < 586:
+            return True
+    return False
+
+def verificar_parede_sala(evento):
+    if evento is not None:
+        x, y = evento.pos
+        if 1050 < x < 1140 and 370 < y < 500:
+            return True
+    return False
+
+def verificar_cruz_esquerda(evento):
+    if evento is not None:
+        x, y = evento.pos
+        if 610 < x < 660 and 350 < y < 410:
+            return True
+    return False
+
+def verificar_cruz_meio(evento):
+    if evento is not None:
+        x, y = evento.pos
+        if 900 < x < 940 and 430 < y < 462:
+            return True
+    return False
+
+def verificar_cruz_direita(evento):
+    if evento is not None:
+        x, y = evento.pos
+        if 1290 < x < 1360 and 290 < y < 350:
+            return True
+    return False
+
+def verificar_armario_porao(evento):
+    if evento is not None:
+        x, y = evento.pos
+        if 590 < x < 640 and 440 < y < 520:
             return True
     return False
 
